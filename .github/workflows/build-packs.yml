@@ -1,0 +1,53 @@
+name: build-packs
+# Builds the AI-free content packs from open data and publishes them to the "packs-latest" release.
+# The TONE app reads https://github.com/tonedeutscheapp/tone-content/releases/download/packs-latest/manifest.json
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['tools/**', '.github/workflows/build-packs.yml']
+  schedule:
+    - cron: '17 3 * * 1'   # weekly, picks up new Wiktionary / Tatoeba exports
+
+permissions:
+  contents: write
+
+concurrency: { group: packs, cancel-in-progress: true }
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: Cache sources (refreshed monthly)
+        uses: actions/cache@v4
+        with:
+          path: data/raw
+          key: sources-${{ hashFiles('tools/fetch_sources.sh') }}-${{ github.run_id }}
+          restore-keys: sources-${{ hashFiles('tools/fetch_sources.sh') }}-
+      - name: Fetch open-licence sources
+        run: |
+          # drop cached sources older than 30 days so new dumps are picked up
+          find data/raw -type f -mtime +30 -delete 2>/dev/null || true
+          bash tools/fetch_sources.sh data/raw
+      - name: Build lexicon
+        run: python3 tools/build_lexicon.py data/raw dist
+      - name: Build sentence bank
+        run: python3 tools/build_sentences.py data/raw dist
+      - name: Validate and pack
+        run: |
+          python3 tools/pack.py dist out --min-lemmas 20000 --min-sentences 50000 | tee pack.log
+          echo "::notice title=packs::$(tail -1 pack.log)"
+          echo "::notice title=lexicon::$(cat dist/lexicon-stats.json | tr -d '\n ')"
+          echo "::notice title=sentences::$(cat dist/sentences-stats.json | tr -d '\n ')"
+      - name: Publish release
+        env: { GH_TOKEN: '${{ github.token }}' }
+        run: |
+          cp LICENSES.md out/ 2>/dev/null || true
+          V=$(python3 -c "import json;print(json.load(open('out/manifest.json'))['version'])")
+          gh release delete packs-latest --yes --cleanup-tag 2>/dev/null || true
+          gh release create packs-latest out/* --title "Content packs $V" \
+            --notes "Built from Wiktionary, Tatoeba and FrequencyWords (see LICENSES.md). Version $V." --latest
