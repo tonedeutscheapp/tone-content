@@ -45,6 +45,12 @@ def clean(s):
     return REF_RE.sub('', s or '').strip()
 
 
+def plausible(form, lemma):
+    """An inflected form starts like its lemma and is not much shorter (Häuser<-Haus, gib<-geben, not Uns<-Unnilseptium)."""
+    f, l = form.lower(), lemma.lower()
+    return f[:1] == l[:1] and len(l) <= 2 * len(f) + 3
+
+
 def freq_counts(path):
     c = {}
     with open(path, encoding='utf-8') as f:
@@ -81,6 +87,8 @@ def main():
             senses = d.get('senses') or []
             # skip pure inflected-form pages ("Häuser" -> form of "Haus"); they feed forms.json
             if senses and all(s.get('form_of') for s in senses):
+                if p in ('abbr', 'phr') or w.isupper():
+                    continue      # symbols/abbreviations ("Uns", "GiB") are not inflected forms
                 for s in senses:
                     for fo in s.get('form_of', []):
                         if fo.get('word'):
@@ -167,7 +175,8 @@ def main():
             continue
         has_lower = any(w == low for w, _ in owners)
         # the same string is also an inflected form of another lemma ("Mir"/"mir" <- ich, "tagen" <- Tag)
-        others = [o for f in (low, low.capitalize()) for o in form_map.get(f, ()) if o in entries and o not in owners]
+        others = [o for f in (low, low.capitalize()) for o in form_map.get(f, ())
+                  if o in entries and o not in owners and plausible(f, o[0])]
         for w, p in owners:
             if p == 'abbr' or (w.isupper() and len(w) > 1):
                 continue
@@ -184,7 +193,7 @@ def main():
         n = freq.get(low, 0)
         if not n:
             continue
-        own = [o for o in owners if o in entries]
+        own = [o for o in owners if o in entries and plausible(form, o[0])]
         for o in own:
             lemma_freq[o] += n // len(own)
 
