@@ -1,0 +1,164 @@
+{
+ "schema": 1,
+ "version": "2026.10.14.1117",
+ "files": [
+  {
+   "name": "forms.json.gz",
+   "kind": "forms",
+   "band": null,
+   "bytes": 2520928,
+   "raw_bytes": 22953514,
+   "sha256": "ff5f8777af3fa36d81b14a80c209f62ff317a5e8df87475b0804de134be85e28"
+  },
+  {
+   "name": "lexicon-A1.json.gz",
+   "kind": "lexicon",
+   "band": "A1",
+   "bytes": 123929,
+   "raw_bytes": 345514,
+   "sha256": "77e17fd39129ce7e62add0df5d905c54c144d6ee4a77b0841619d40352a91993"
+  },
+  {
+   "name": "lexicon-A2.json.gz",
+   "kind": "lexicon",
+   "band": "A2",
+   "bytes": 167211,
+   "raw_bytes": 458564,
+   "sha256": "29026d1e94a19432a506957ef433fd6fa7dc0e184b1f0c905af4ed037a0d2a06"
+  },
+  {
+   "name": "lexicon-B1.json.gz",
+   "kind": "lexicon",
+   "band": "B1",
+   "bytes": 281657,
+   "raw_bytes": 775877,
+   "sha256": "3060c597769ad45540f843ab0da6cf24594a0016f2a1a953cc6a1a44c1b1ff38"
+  },
+  {
+   "name": "lexicon-B2.json.gz",
+   "kind": "lexicon",
+   "band": "B2",
+   "bytes": 557038,
+   "raw_bytes": 1540671,
+   "sha256": "1ab1d56798e299d072528bfbc9f4fc304c99de3b5237cd4088facbc3c510c298"
+  },
+  {
+   "name": "lexicon-C1.json.gz",
+   "kind": "lexicon",
+   "band": "C1",
+   "bytes": 1024327,
+   "raw_bytes": 2877681,
+   "sha256": "e281eed6fca65eeb4ac4d02abd352e99693b89ed5e5e19220b01934cd10e11c8"
+  },
+  {
+   "name": "lexicon-C2.json.gz",
+   "kind": "lexicon",
+   "band": "C2",
+   "bytes": 1574703,
+   "raw_bytes": 4556421,
+   "sha256": "ab7be7ccfe0f3cb53443e120104f5aa74cf2a46c5383d83f719880e18648be8f"
+  },
+  {
+   "name": "lexicon-R.json.gz",
+   "kind": "lexicon",
+   "band": "R",
+   "bytes": 12625816,
+   "raw_bytes": 41698644,
+   "sha256": "e12104e4eb85ce4a78490a0c4c40102d812d280879d8fd8909f7035ef6849b3c"
+  },
+  {
+   "name": "sentences-A1.json.gz",
+   "kind": "sentences",
+   "band": "A1",
+   "bytes": 8909775,
+   "raw_bytes": 38029886,
+   "sha256": "9f4b7098bbe314487dc56be3ac7a0b869ec2f1dc4ec2aed589e1faa426ac3d8b"
+  },
+  {
+   "name": "sentences-A2.json.gz",
+   "kind": "sentences",
+   "band": "A2",
+   "bytes": 4791877,
+   "raw_bytes": 18162109,
+   "sha256": "39ad3653d45bae3eaf55dce19cc22f8bde77b344ca25530c82e3b8ec0b7e17a4"
+  },
+  {
+   "name": "sentences-B1.json.gz",
+   "kind": "sentences",
+   "band": "B1",
+   "bytes": 3629646,
+   "raw_bytes": 13071220,
+   "sha256": "d129fcb7cdbf41bb68b9680b9d55d7a08eb8cb786a24259e00ccdc21638fe599"
+  },
+  {
+   "name": "sentences-B2.json.gz",
+   "kind": "sentences",
+   "band": "B2",
+   "bytes": 3449334,
+   "raw_bytes": 11885988,
+   "sha256": "6c73b190f125114914a117e4780b3eab77a3e141e62de6248bf4c7ba004c6eda"
+  },
+  {
+   "name": "sentences-C1.json.gz",
+   "kind": "sentences",
+   "band": "C1",
+   "bytes": 2510018,
+   "raw_bytes": 8385483,
+   "sha256": "4432fe2243f9073bc05daeccebe0ed92867eed8d3f4d9ab0984cf395ae2379d2"
+  },
+  {
+   "name": "sentences-C2.json.gz",
+   "kind": "sentences",
+   "band": "C2",
+   "bytes": 4327767,
+   "raw_bytes": 14647974,
+   "sha256": "b4039e618bf7082872ad21722f9f197cd32258e675d3f4fc711eae6b81133c55"
+  },
+  {
+   "name": "word-sentences.json.gz",
+   "kind": "word",
+   "band": null,
+   "bytes": 918060,
+   "raw_bytes": 2103563,
+   "sha256": "5ab3c0d4053d32576ffd771c87780e1383647cf8e9eb8b70faa04ee36eef8104"
+  }
+ ],
+ "stats": {
+  "lexicon": {
+   "lines": 1336315,
+   "bad_lines": 0,
+   "lemmas": 166012,
+   "forms": 671615,
+   "with_tr": 15198,
+   "with_en": 74149,
+   "bands": {
+    "A1": 800,
+    "A2": 1000,
+    "B1": 1700,
+    "B2": 3500,
+    "C1": 7000,
+    "C2": 12157,
+    "R": 139855
+   }
+  },
+  "sentences": {
+   "sentences": 502556,
+   "with_tr": 20756,
+   "bands": {
+    "A1": 212978,
+    "A2": 88924,
+    "B1": 59924,
+    "B2": 50263,
+    "C1": 34781,
+    "C2": 55686
+   },
+   "words_with_examples": 36141
+  }
+ },
+ "licenses": {
+  "bands": "A1..C2 estimated from frequency rank; R = rare words (reference only)",
+  "lexicon": "Wiktionary (de.wiktionary.org) via kaikki.org/wiktextract, CC BY-SA 4.0 / GFDL",
+  "frequency": "FrequencyWords by Hermit Dave (OpenSubtitles 2018), CC BY-SA 4.0",
+  "sentences": "Tatoeba (tatoeba.org), CC BY 2.0 FR; sentence ids link to their authors"
+ }
+}
