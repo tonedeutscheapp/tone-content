@@ -45,6 +45,11 @@ def clean(s):
     return REF_RE.sub('', s or '').strip()
 
 
+GRAM = {'nominative', 'genitive', 'dative', 'accusative', 'singular', 'plural', 'present', 'past', 'participle',
+        'imperative', 'subjunctive-i', 'subjunctive-ii', 'first-person', 'second-person', 'third-person',
+        'comparative', 'superlative', 'positive', 'infinitive', 'zu-infinitive', 'masculine', 'feminine', 'neuter'}
+
+
 def plausible(form, lemma):
     """An inflected form starts like its lemma and is not much shorter (Häuser<-Haus, gib<-geben, not Uns<-Unnilseptium)."""
     f, l = form.lower(), lemma.lower()
@@ -152,6 +157,8 @@ def main():
                         vf[2] = form
                     if 'auxiliary' in ft and form in ('haben', 'sein') and 'aux' not in e:
                         e['aux'] = form
+                if not (ft & GRAM) or ft & {'abbreviation', 'symbol', 'alternative', 'obsolete'}:
+                    continue      # e.g. ISO codes "ach" (Acholi) or "GiB" listed as forms
                 # only single-token forms: pieces of "weiß voraus" or "habe gegessen" would credit the wrong lemma
                 for piece in ([form] if ' ' not in form else []):
                     if piece != w and WORD_RE.match(piece) and piece not in ('der', 'die', 'das', 'des', 'dem', 'den', 'ich', 'du', 'er', 'sie', 'es', 'wir', 'ihr', 'hat', 'ist', 'hast', 'bist', 'habe', 'bin', 'sind', 'seid', 'habt', 'haben', 'sein', 'hätte', 'wäre', 'würde', 'werden', 'wurde', 'worden', 'man'):
