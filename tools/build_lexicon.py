@@ -144,7 +144,8 @@ def main():
                         vf[2] = form
                     if 'auxiliary' in ft and form in ('haben', 'sein') and 'aux' not in e:
                         e['aux'] = form
-                for piece in form.split():
+                # only single-token forms: pieces of "weiß voraus" or "habe gegessen" would credit the wrong lemma
+                for piece in ([form] if ' ' not in form else []):
                     if piece != w and WORD_RE.match(piece) and piece not in ('der', 'die', 'das', 'des', 'dem', 'den', 'ich', 'du', 'er', 'sie', 'es', 'wir', 'ihr', 'hat', 'ist', 'hast', 'bist', 'habe', 'bin', 'sind', 'seid', 'habt', 'haben', 'sein', 'hätte', 'wäre', 'würde', 'werden', 'wurde', 'worden', 'man'):
                         form_map[piece].add((w, p))
             if p == 'v' and any(vf):
@@ -155,7 +156,7 @@ def main():
     # lemma frequency = own count + counts of its inflected forms.
     # FrequencyWords is lower-case, so homographs need care:
     #  - a form that is itself a lemma ("heute" adverb vs. Präteritum of "heuen") credits only the lemma;
-    #  - a nominalised noun ("das Kommen") gets a quarter of the count of its verb/adjective ("kommen").
+    #  - a nominalised noun ("das Kommen") gets 1/20 of the count of its verb/adjective ("kommen").
     lemma_freq = collections.Counter()
     lower_lemmas = collections.defaultdict(list)
     for (w, p) in entries:
@@ -166,7 +167,7 @@ def main():
             continue
         has_lower = any(w == low for w, _ in owners)
         for w, p in owners:
-            share = n if (w == low or not has_lower) else n // 4
+            share = n if (w == low or not has_lower) else n // 20
             lemma_freq[(w, p)] += share
     for form, owners in form_map.items():
         low = form.lower()
