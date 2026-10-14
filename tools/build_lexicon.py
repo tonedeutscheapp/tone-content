@@ -28,6 +28,7 @@ POS = {'noun': 'n', 'verb': 'v', 'adj': 'adj', 'adv': 'adv', 'prep': 'prep', 'co
 # hand-built units (tone-app/content/units) always override it.
 BANDS = [(800, 'A1'), (1800, 'A2'), (3500, 'B1'), (7000, 'B2'), (14000, 'C1')]
 WORD_RE = re.compile(r"^[A-Za-zÄÖÜäöüß][A-Za-zÄÖÜäöüß' .-]{0,40}$")
+PRON_RE = re.compile(r'^(ich|du|er/sie/es|er|sie|es|wir|ihr|sie/Sie)\s+')
 ART_RE = re.compile(r'^(der|die|das|des|dem|den)\s+')
 REF_RE = re.compile(r'\[\d+[a-z]?\]\s*')
 
@@ -137,6 +138,7 @@ def main():
             vf = e.get('vf') or ['', '', '']
             for fo in d.get('forms') or []:
                 form = (fo.get('form') or '').strip()
+                form = PRON_RE.sub('', form)   # "er/sie/es geht" -> "geht"
                 ft = set(fo.get('tags') or [])
                 if not form or form == '—' or len(form) > 50:
                     continue
@@ -153,7 +155,7 @@ def main():
                         vf[0] = form
                     elif has(ft, 'past', 'first-person', 'singular') and 'subjunctive-ii' not in ft and not vf[1]:
                         vf[1] = form
-                    elif has(ft, 'participle', 'past') and not vf[2]:
+                    elif any('participle' in x for x in ft) and 'present' not in ft and not vf[2]:
                         vf[2] = form
                     if 'auxiliary' in ft and form in ('haben', 'sein') and 'aux' not in e:
                         e['aux'] = form
