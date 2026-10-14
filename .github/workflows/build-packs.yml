@@ -51,3 +51,9 @@ jobs:
           gh release delete packs-latest --yes --cleanup-tag 2>/dev/null || true
           gh release create packs-latest out/* --title "Content packs $V" \
             --notes "Built from Wiktionary, Tatoeba and FrequencyWords (see LICENSES.md). Version $V." --latest
+      - name: Publish to the packs branch (served with CORS by raw.githubusercontent.com for the app and web)
+        run: |
+          cd out
+          git init -q -b packs && git add -A
+          git -c user.name=tone-bot -c user.email=bot@users.noreply.github.com commit -qm "packs $(python3 -c "import json;print(json.load(open('manifest.json'))['version'])")"
+          git push -qf "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" packs
