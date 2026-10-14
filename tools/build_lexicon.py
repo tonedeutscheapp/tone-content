@@ -166,9 +166,17 @@ def main():
         if not n:
             continue
         has_lower = any(w == low for w, _ in owners)
+        # the same string is also an inflected form of another lemma ("Mir"/"mir" <- ich, "tagen" <- Tag)
+        others = [o for f in (low, low.capitalize()) for o in form_map.get(f, ()) if o in entries and o not in owners]
         for w, p in owners:
+            if p == 'abbr' or (w.isupper() and len(w) > 1):
+                continue
             share = n if (w == low or not has_lower) else n // 20
+            if others:
+                share = share // 2 if w == low else share // 20
             lemma_freq[(w, p)] += share
+        for o in set(others):
+            lemma_freq[o] += n // (2 * len(set(others)))
     for form, owners in form_map.items():
         low = form.lower()
         if low in lower_lemmas:
