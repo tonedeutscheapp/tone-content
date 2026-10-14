@@ -34,7 +34,7 @@ REF_RE = re.compile(r'\[\d+[a-z]?\]\s*')
 
 def band(rank):
     if rank is None:
-        return 'C2'
+        return 'R'   # not in the 50k frequency list: rare / reference pack, downloaded only for lookups
     for lim, b in BANDS:
         if rank <= lim:
             return b
@@ -109,7 +109,7 @@ def main():
                         de_gl.append(g[:220])
                 for x in s.get('examples') or []:
                     t = clean(x.get('text'))
-                    if t and 12 <= len(t) <= 160 and len(ex) < 3 and '[' not in t:
+                    if t and 12 <= len(t) <= 140 and len(ex) < 3 and '[' not in t and t[0] not in '„"»«“':
                         ex.append(t)
             tr, en = e.setdefault('tr', []), e.setdefault('en', [])
             for t in d.get('translations') or []:
@@ -152,12 +152,27 @@ def main():
             if p == 'n' and 'a' not in e and e.get('g'):
                 e['a'] = {'m': 'der', 'f': 'die', 'n': 'das'}[e['g']]
 
-    # lemma frequency = own count + counts of its inflected forms
+    # lemma frequency = own count + counts of its inflected forms.
+    # FrequencyWords is lower-case, so homographs need care:
+    #  - a form that is itself a lemma ("heute" adverb vs. Präteritum of "heuen") credits only the lemma;
+    #  - a nominalised noun ("das Kommen") gets a quarter of the count of its verb/adjective ("kommen").
     lemma_freq = collections.Counter()
+    lower_lemmas = collections.defaultdict(list)
     for (w, p) in entries:
-        lemma_freq[(w, p)] += freq.get(w, 0) + freq.get(w.lower(), 0)
+        lower_lemmas[w.lower()].append((w, p))
+    for low, owners in lower_lemmas.items():
+        n = freq.get(low, 0)
+        if not n:
+            continue
+        has_lower = any(w == low for w, _ in owners)
+        for w, p in owners:
+            share = n if (w == low or not has_lower) else n // 4
+            lemma_freq[(w, p)] += share
     for form, owners in form_map.items():
-        n = freq.get(form, 0) + (freq.get(form.lower(), 0) if form.lower() != form else 0)
+        low = form.lower()
+        if low in lower_lemmas:
+            continue
+        n = freq.get(low, 0)
         if not n:
             continue
         own = [o for o in owners if o in entries]

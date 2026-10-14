@@ -81,6 +81,7 @@ manifest = {
     'files': files,
     'stats': stats,
     'licenses': {
+        'bands': 'A1..C2 estimated from frequency rank; R = rare words (reference only)',
         'lexicon': 'Wiktionary (de.wiktionary.org) via kaikki.org/wiktextract, CC BY-SA 4.0 / GFDL',
         'frequency': 'FrequencyWords by Hermit Dave (OpenSubtitles 2018), CC BY-SA 4.0',
         'sentences': 'Tatoeba (tatoeba.org), CC BY 2.0 FR; sentence ids link to their authors',
